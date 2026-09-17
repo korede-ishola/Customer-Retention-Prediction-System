@@ -1,0 +1,10 @@
+artifact_location: file:///Users/koredeishola/Documents/Machine%20Learning/Projects/Telco%20Churn%20Prediction/mlruns/268727128332460167/models/m-ebb21f4a8a584fab90059e78474160cc/artifacts
+creation_timestamp: 1789576464414
+experiment_id: '268727128332460167'
+last_updated_timestamp: 1789576467967
+model_id: m-ebb21f4a8a584fab90059e78474160cc
+model_type: null
+name: telco_churn_pipeline
+source_run_id: 0ce7f4ca48db4d0faa551636a3bb481c
+status: 2
+status_message: null

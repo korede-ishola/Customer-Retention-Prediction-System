@@ -1,0 +1,3 @@
+.venv/
+data/Telco-Customer-Churn-Processed.csv
+data/Telco-Customer-Churn-Raw.csv

@@ -1,0 +1,22 @@
+artifact_path: file:///Users/koredeishola/Documents/Machine%20Learning/Projects/Telco%20Churn%20Prediction/mlruns/268727128332460167/models/m-ebb21f4a8a584fab90059e78474160cc/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.9.6
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.6.1
+mlflow_version: 3.1.4
+model_id: m-ebb21f4a8a584fab90059e78474160cc
+model_size_bytes: 547056
+model_uuid: m-ebb21f4a8a584fab90059e78474160cc
+prompts: null
+run_id: 0ce7f4ca48db4d0faa551636a3bb481c
+utc_time_created: '2026-09-16 16:34:24.427886'

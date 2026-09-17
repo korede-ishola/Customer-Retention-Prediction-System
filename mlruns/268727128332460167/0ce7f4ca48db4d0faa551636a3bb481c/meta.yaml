@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/koredeishola/Documents/Machine%20Learning/Projects/Telco%20Churn%20Prediction/mlruns/268727128332460167/0ce7f4ca48db4d0faa551636a3bb481c/artifacts
+end_time: 1789576467971
+entry_point_name: ''
+experiment_id: '268727128332460167'
+lifecycle_stage: active
+run_id: 0ce7f4ca48db4d0faa551636a3bb481c
+run_name: selective-smelt-10
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1789576463996
+status: 3
+tags: []
+user_id: koredeishola

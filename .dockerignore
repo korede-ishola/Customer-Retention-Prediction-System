@@ -1,0 +1,10 @@
+.venv/
+.git/
+.github/
+notebooks/
+tests/
+mlruns/
+data/
+scripts/
+src/model/
+src/features/
