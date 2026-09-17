@@ -248,11 +248,7 @@ A lower threshold can identify more potential churners, increasing recall, but i
 
 The validation set was therefore used to examine different thresholds.
 
-For example, the Logistic Regression baseline was evaluated across thresholds from 0.15 to 0.40. A threshold of 0.30 produced the lowest observed business cost for that experiment.
-
-The same decision threshold was subsequently incorporated into the model evaluation process.
-
-## For the tuned XGBoost experiment, the validation results around the selected threshold demonstrated the trade-off between precision, recall and business cost. At a threshold of 0.30, the experiment produced a validation cost of 421 with approximately 0.454 precision and 0.882 recall for the churn class.
+For the tuned XGBoost experiment, the validation results around the selected threshold demonstrated the trade-off between precision, recall and business cost. At a threshold of 0.30, the experiment produced a validation cost of 421 with approximately 0.454 precision and 0.882 recall for the churn class.
 
 # 6. Model Selection
 
