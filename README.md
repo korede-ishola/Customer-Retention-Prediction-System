@@ -18,7 +18,6 @@ This project goes beyond building a binary classification model. It explores how
   * [5. Model Selection](#5-model-selection)
   * [6. Hyperparameter Tuning](#6-hyperparameter-tuning)
 * [Productionization](#productionization)
-* [ML Pipeline](#ml-pipeline)
 * [Project Structure](#project-structure)
 * [Experiment Tracking](#experiment-tracking)
 * [Testing](#testing)
