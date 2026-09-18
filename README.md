@@ -2,7 +2,7 @@
 
 An end-to-end machine learning system for identifying telecom customers at risk of churn and supporting targeted customer retention decisions.
 
-This project goes beyond building a binary classification model. It explores how a churn prediction system can be designed around the **business cost of a targeted customer retention campaign**, then translates the experimentation into a modular, reproducible ML system with preprocessing, model training, evaluation, experiment tracking, API serving, testing, and containerization.
+This project goes beyond building a binary classification model. It explores how a churn prediction system can be designed around the business cost of a targeted customer retention campaign, then translates the experimentation into a modular, reproducible ML system with preprocessing, model training, evaluation, experiment tracking, API serving, testing, and containerization.
 
 ## Table of Contents
 
@@ -35,7 +35,7 @@ When a customer leaves, the business loses the future revenue associated with th
 
 The goal of this project is to build a system that answers:
 
-> **Which customers are most likely to churn, and how should the prediction threshold be chosen when the cost of missing a churner is different from the cost of targeting a loyal customer?**
+> Which customers are most likely to churn, and how should the prediction threshold be chosen when the cost of missing a churner is different from the cost of targeting a loyal customer?
 
 A conventional classification model may optimize a metric such as accuracy or F1 score. However, for customer retention, the consequences of different types of mistakes are not necessarily equal.
 
@@ -44,7 +44,7 @@ A conventional classification model may optimize a metric such as accuracy or F1
 
 Missing a genuine churner can represent a significantly greater business cost than contacting a customer who would have stayed anyway.
 
-This project therefore treats churn prediction as a **cost-sensitive decision problem** rather than simply a classification problem.
+This project therefore treats churn prediction as a cost-sensitive decision problem rather than simply a classification problem.
 
 ## Project Objective
 
@@ -126,8 +126,6 @@ This design ensures that the same preprocessing logic can be applied consistentl
 
 One of the central design decisions in this project was to avoid relying exclusively on conventional classification metrics.
 
-**Accuracy isn't enough**
-
 Suppose a model predicts that almost every customer will stay.
 
 Because most customers in the dataset do not churn, such a model could achieve reasonable accuracy while failing to identify a large proportion of customers who are actually going to leave.
@@ -136,11 +134,11 @@ More importantly, the cost of the mistakes is asymmetric.
 
 For this project, the following business assumption was made:
 
-> **Missing a churner is 6 times more costly than incorrectly targeting a loyal customer.**
+> Missing a churner is 6 times more costly than incorrectly targeting a loyal customer.
 
 This assumption was incorporated directly into a custom evaluation function.
 
-### Business Cost
+**Business Cost**
 
 The base cost is defined as:
 
@@ -175,7 +173,7 @@ That makes the evaluation much closer to the eventual decision-making context.
 
 Classification models typically use a probability threshold of 0.5 to convert predicted probabilities into classes.
 
-For a retention system, there is no reason to assume that 0.5 is automatically the optimal threshold.
+For a retention system however, 0.5 may not automatically be the optimal threshold.
 
 A lower threshold can identify more potential churners, increasing recall, but it also increases the number of customers incorrectly flagged.
 
@@ -187,25 +185,25 @@ For the tuned XGBoost experiment, the validation results around the selected thr
 
 Several models were considered rather than immediately choosing a complex algorithm.
 
-### Logistic Regression
+**Logistic Regression**
 
 Logistic Regression was used as the baseline model.
 
 This establishes a simple reference point against which more complex models can be evaluated.
 
-### Random Forest
+**Random Forest**
 
 Random Forest was introduced as a non-linear ensemble model capable of capturing interactions that a linear model may miss.
 
 At the selected threshold, the Random Forest experiment produced a higher business cost than the baseline experiment.
 
-### LightGBM
+**LightGBM**
 
 LightGBM was evaluated as a gradient-boosting approach.
 
 The initial LightGBM experiment produced a lower validation cost than both the Logistic Regression and Random Forest experiments.
 
-### XGBoost
+**XGBoost**
 
 XGBoost was also evaluated and subsequently tuned.
 
@@ -219,7 +217,7 @@ This made model selection consistent with the actual objective of the system.
 
 After comparing the initial models, hyperparameter optimization was performed using Optuna.
 
-For XGBoost, parameters explored included:
+For XGBoost, parameters explored were:
 
 * `n_estimators`
 * `learning_rate`
@@ -232,7 +230,7 @@ For XGBoost, parameters explored included:
 * `reg_lambda`
 
 The objective function trained an XGBoost model, generated churn probabilities, converted them into predictions using the selected threshold, and returned the custom `business_cost`. 
-In other words, the hyperparameter search was explicitly optimized toward the **business objective**, rather than generic accuracy.
+In other words, the hyperparameter search was explicitly optimized toward the business objective, rather than generic accuracy.
 
 This produced the best set of parameters for the XGBoost model.
 
@@ -305,8 +303,6 @@ Customer-Retention-Prediction-System/
 └── requirements.txt
 ```
 
-The structure separates experimentation from reusable application code while keeping each stage of the ML lifecycle responsible for a specific task.
-
 ## Experiment Tracking
 
 MLflow was incorporated to track model experiments.
@@ -319,7 +315,7 @@ The tracked information includes:
 * Business cost
 * Trained model artifact
 
-This provides a foundation for comparing experiments without relying solely on manually recorded notebook outputs.
+This provided a foundation for comparing experiments without relying solely on manually recorded notebook outputs.
 
 ## Testing
 
