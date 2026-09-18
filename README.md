@@ -4,8 +4,6 @@ An end-to-end machine learning system for identifying telecom customers at risk 
 
 This project goes beyond building a binary classification model. It explores how a churn prediction system can be designed around the **business cost of a targeted customer retention campaign**, then translates the experimentation into a modular, reproducible ML system with preprocessing, model training, evaluation, experiment tracking, API serving, testing, and containerization.
 
----
-
 ## Table of Contents
 
 * [Problem Statement](#problem-statement)
@@ -31,8 +29,6 @@ This project goes beyond building a binary classification model. It explores how
 * [Key Design Decisions](#key-design-decisions)
 * [Limitations and Future Improvements](#limitations-and-future-improvements)
 
----
-
 ## Problem Statement
 
 Customer churn is a major challenge for subscription-based businesses.
@@ -52,8 +48,6 @@ Missing a genuine churner can represent a significantly greater business cost th
 
 This project therefore treats churn prediction as a **cost-sensitive decision problem** rather than simply a classification problem.
 
----
-
 ## Project Objective
 
 The system was designed to:
@@ -71,8 +65,6 @@ The system was designed to:
 11. Containerize the application with Docker.
 12. Add automated tests around important components of the system.
 
----
-
 ## Dataset
 
 The project uses the **Telco Customer Churn** dataset.
@@ -80,8 +72,6 @@ The project uses the **Telco Customer Churn** dataset.
 The dataset contains 7,043 customer records and 21 columns, including customer demographics, account information, subscribed services, billing information, and the churn target.
 
 The dataset contains 5,174 non-churned customers and 1,869 churned customers, making class imbalance an important consideration during modeling.
-
----
 
 # Approach
 
@@ -101,8 +91,6 @@ Although `TotalCharges` represents a numerical quantity, it was initially loaded
 
 It was converted explicitly to numeric values. Values that cannot be interpreted as numbers are converted into missing values, allowing them to be handled consistently by the preprocessing pipeline.
 
----
-
 ## 2. Data Splitting
 
 During experimentation, the dataset was split into training, validation, and test sets. The split was stratified to preserve the churn/non-churn distribution across the datasets.
@@ -110,8 +98,6 @@ During experimentation, the dataset was split into training, validation, and tes
 The training set was used to train the model, the validation set was used for model comparison, threshold selection, and hyperparameter tuning, while the test set was kept for final evaluation.
 
 During the final training, the dataset was split into training and test sets. The training set used to train the model, while the test set was used to evaluate it.
-
----
 
 ## 3. Data Preprocessing
 
@@ -143,8 +129,6 @@ The categorical preprocessing pipeline performs:
 These transformations are combined using a `ColumnTransformer`.
 
 This design ensures that the same preprocessing logic can be applied consistently during training and inference.
-
----
 
 ## 4. Business-Aware Evaluation
 
@@ -195,8 +179,6 @@ The actual implementation calculates the confusion-matrix components, applies th
 
 That makes the evaluation much closer to the eventual decision-making context.
 
----
-
 ## 5. Prediction Threshold Selection
 
 Classification models typically use a probability threshold of 0.5 to convert predicted probabilities into classes.
@@ -241,8 +223,6 @@ The final model-selection process considered not only conventional classificatio
 
 This made model selection consistent with the actual objective of the system.
 
----
-
 ## Hyperparameter Tuning
 
 After comparing the initial models, hyperparameter optimization was performed using Optuna.
@@ -279,68 +259,7 @@ The goal was to separate responsibilities such as:
 
 This makes the system easier to maintain and, more importantly, reduces the risk of having training logic that differs from inference logic.
 
-The notebook serves as the **experimentation and reasoning layer**, while the modularized source code contains the reusable implementation.
-
----
-
-# ML Pipeline
-
-The overall workflow can be summarized as:
-
-```text
-                    Raw Customer Data
-                           │
-                           ▼
-                    Data Validation
-                           │
-                           ▼
-                     Data Cleaning
-                           │
-                           ▼
-                 Train / Validation / Test
-                           │
-                           ▼
-                  Feature Preprocessing
-                   ┌───────┴────────┐
-                   │                │
-             Numerical          Categorical
-                   │                │
-          Median Imputation   Most-Frequent Imputation
-                   │                │
-             StandardScaler    One-Hot Encoding
-                   │                │
-                   └───────┬────────┘
-                           ▼
-                    Model Training
-                           │
-             ┌─────────────┼─────────────┐
-             ▼             ▼             ▼
-        Logistic RF      LightGBM      XGBoost
-             │             │             │
-             └─────────────┼─────────────┘
-                           ▼
-                 Business Cost Evaluation
-                           │
-                           ▼
-                   Threshold Selection
-                           │
-                           ▼
-                  Optuna Hyperparameter
-                       Optimization
-                           │
-                           ▼
-                     Final Pipeline
-                           │
-                 ┌─────────┴─────────┐
-                 ▼                   ▼
-              MLflow              FastAPI
-            Experiment           Inference
-             Tracking               │
-                                    ▼
-                                  Docker
-```
-
----
+The notebook served as the experimentation and reasoning layer, while the modularized source code contains the reusable implementation.
 
 # Project Structure
 
@@ -348,50 +267,57 @@ The overall workflow can be summarized as:
 Customer-Retention-Prediction-System/
 │
 ├── data/
-│   ├── raw/
-│   └── processed/
+│   ├── Telco-Customer-Churn-Raw.csv
+│   └── Telco-Customer-Churn-Processed.csv
+│
+├── mlruns/
+│
+├── models/
+│   └── telco_churn_pipeline.pkl
 │
 ├── notebooks/
 │   └── Telco_Churn_Experimentation.ipynb
 │
+├── scripts/
+│   └── train.py
+│
 ├── src/
 │   ├── api/
+|   |   ├── app.py
 │   │   └── main.py
 │   │
 │   ├── data/
-│   │   ├── load.py
-│   │   └── validate.py
+│   │   ├── load_data.py
+│   │   ├── preprocess_data.py
+│   │   ├── save_data.py
+│   │   └── validate_data.py
 │   │
 │   ├── features/
-│   │   └── preprocessing.py
+│   │   ├── transform_data.py
+│   │   └── transform_pipeline.py
 │   │
 │   └── models/
+│       ├── evaluate.py
 │       ├── train.py
-│       └── evaluate.py
-│
-├── scripts/
-│   └── train.py
+│       └── tune.py
 │
 ├── tests/
 │   ├── test_preprocessing.py
 │   ├── test_training.py
 │   └── test_api.py
 │
-├── mlruns/
-│
-├── requirements.txt
-├── Dockerfile
+├── .dockerignore
+├── .gitignore
+├── dockerfile
 ├── README.md
-└── .gitignore
+└── requirements.txt
 ```
 
 The structure separates experimentation from reusable application code while keeping each stage of the ML lifecycle responsible for a specific task.
 
----
+## Experiment Tracking
 
-# Experiment Tracking
-
-**MLflow** was incorporated to track model experiments.
+MLflow was incorporated to track model experiments.
 
 The tracked information includes:
 
@@ -401,19 +327,9 @@ The tracked information includes:
 * Business cost
 * Trained model artifact
 
-The notebook demonstrates an MLflow experiment named:
-
-```text
-Telco Churn - XGBoost
-```
-
-and logs the selected model parameters and evaluation metrics before logging the XGBoost model itself.
-
 This provides a foundation for comparing experiments without relying solely on manually recorded notebook outputs.
 
----
-
-# Testing
+## Testing
 
 The project includes automated tests covering important components of the system.
 
@@ -425,43 +341,21 @@ Tests are intended to verify that:
 
 Testing is particularly important in a production-oriented ML project because a model can produce technically valid predictions while the surrounding data transformation or serving logic is incorrect.
 
----
+## API
 
-# API
+The trained model was exposed through a FastAPI application.
 
-The trained model is exposed through a **FastAPI** application.
+The API provides a way for external applications to submit customer information and obtain a churn prediction without interacting directly with the training code. This allows the trained model to be reused without rerunning the experimentation workflow.
 
-The API provides a way for external applications to submit customer information and obtain a churn prediction without interacting directly with the training code.
+## Docker
 
-The API layer is deliberately separated from model training so that:
-
-```text
-Training
-    ↓
-Saved Model / Pipeline
-    ↓
-FastAPI
-    ↓
-Prediction Request
-    ↓
-Prediction Response
-```
-
-This separation allows the trained model to be reused without rerunning the experimentation workflow.
-
----
-
-# Docker
-
-The application is containerized using Docker.
+The application was containerized using Docker.
 
 Containerization packages the application and its Python dependencies into a reproducible environment, reducing the dependency on the configuration of the machine running the application.
 
 This also provides a cleaner path toward deploying the model to a cloud or server environment in the future.
 
----
-
-# Installation
+## Installation
 
 Clone the repository:
 
@@ -493,9 +387,9 @@ pip install -r requirements.txt
 
 ---
 
-# Running the Project
+## Running the Project
 
-## Train the model
+### Train the model
 
 The training process can be executed through the training script:
 
@@ -503,7 +397,7 @@ The training process can be executed through the training script:
 python scripts/train.py
 ```
 
-## Run the API
+### Run the API
 
 Start the FastAPI application with:
 
@@ -513,13 +407,13 @@ uvicorn src.api.main:app --reload
 
 The API documentation is available through FastAPI's automatically generated Swagger interface.
 
-## Run tests
+### Run tests
 
 ```bash
 pytest
 ```
 
-## Run with Docker
+### Run with Docker
 
 Build the image:
 
@@ -533,110 +427,23 @@ Then run the container:
 docker run -p 8000:8000 customer-retention-system
 ```
 
----
-
-# Key Design Decisions
-
-## 1. Business cost instead of accuracy alone
-
-The most important design decision was to make the evaluation reflect the consequences of prediction errors.
-
-The system therefore evaluates models using a custom business-cost function that penalizes missed churners more heavily than unnecessary retention targeting.
-
----
-
-## 2. Threshold tuning
-
-The classification threshold is treated as a business decision rather than an immutable property of the model.
-
-This allows the system to deliberately trade precision against recall according to the cost assumptions.
-
----
-
-## 3. Class imbalance
-
-The churn class represents a smaller proportion of the dataset.
-
-The modeling process therefore accounts for class imbalance, including the use of `scale_pos_weight` for XGBoost.
-
----
-
-## 4. Reproducible preprocessing
-
-Preprocessing is implemented as a pipeline rather than as a collection of notebook-only transformations.
-
-This helps ensure that the same assumptions are applied to data during training and inference.
-
----
-
-## 5. Modular architecture
-
-The project separates data handling, feature preprocessing, model training, evaluation, and API serving.
-
-This makes the system easier to test, maintain, and extend than a single monolithic notebook.
-
----
-
-## 6. Experimentation before productionization
-
-The notebook was used to investigate the problem, test assumptions, compare models, tune thresholds, and explore hyperparameters.
-
-Only after the modeling decisions were established was the work organized into reusable modules.
-
-This reflects a practical ML workflow:
-
-```text
-Experiment → Validate assumptions → Select approach → Modularize → Serve
-```
-
----
-
-# Limitations and Future Improvements
+## Limitations and Future Improvements
 
 This project represents a production-oriented implementation rather than a fully deployed production system.
 
 Potential future improvements include:
 
-* More robust cross-validation during model selection.
-* Calibration of predicted churn probabilities.
 * More extensive threshold optimization based on real retention campaign costs.
 * Monitoring for data and model drift.
 * Automated retraining.
 * Model versioning and promotion workflows.
 * Integration with a customer relationship management system.
-* More detailed model explainability.
 * Deployment to a cloud environment.
-* Monitoring of API latency and prediction distributions.
 
 Most importantly, the assumed business costs in this project are illustrative. A real organization should estimate the financial impact of missed churners, retention offers, and different customer segments using historical business data.
 
----
-
-# Conclusion
+## Conclusion
 
 This project demonstrates an end-to-end approach to building a machine learning system for customer retention.
 
-Rather than stopping at:
-
-> **"Train a model that predicts churn."**
-
-the project explores the broader question:
-
-> **"How can churn predictions be turned into a decision system that reflects the cost of acting incorrectly?"**
-
-The resulting workflow combines:
-
-* Data cleaning
-* Reproducible preprocessing
-* Class-imbalance handling
-* Multiple model comparison
-* Business-cost-based evaluation
-* Threshold optimization
-* Hyperparameter tuning with Optuna
-* Experiment tracking with MLflow
-* Modular ML architecture
-* Automated testing
-* FastAPI inference
-* Docker containerization
-
-The project therefore serves as an example of moving from **machine learning experimentation toward a maintainable ML system**.
+Rather than simply training a model that predicts churn, it explores how churn predictions can be turned into a decision system that reflects the underlying business cost.
