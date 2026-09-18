@@ -25,7 +25,6 @@ This project goes beyond building a binary classification model. It explores how
 * [Docker](#docker)
 * [Installation](#installation)
 * [Running the Project](#running-the-project)
-* [Key Design Decisions](#key-design-decisions)
 * [Limitations and Future Improvements](#limitations-and-future-improvements)
 
 ## Problem Statement
