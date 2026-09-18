@@ -101,20 +101,14 @@ During the final training, the dataset was split into training and test sets. Th
 
 Rather than manually transforming columns before every modeling experiment, preprocessing was organized into reusable pipelines.
 
-### Numerical features
-
-Numerical variables include:
-
-* `tenure`
-* `MonthlyCharges`
-* `TotalCharges`
+**Numerical features**
 
 The numerical preprocessing pipeline performs:
 
 1. Median imputation
 2. Standard scaling
 
-### Categorical features
+**Categorical features**
 
 Categorical variables were treated as nominal features because there was no assumption of a strict ordering between their categories.
 
@@ -132,7 +126,7 @@ This design ensures that the same preprocessing logic can be applied consistentl
 
 One of the central design decisions in this project was to avoid relying exclusively on conventional classification metrics.
 
-### Accuracy isn't enough
+**Accuracy isn't enough**
 
 Suppose a model predicts that almost every customer will stay.
 
