@@ -2,7 +2,7 @@
 
 An end-to-end machine learning system for identifying telecom customers at risk of churn and supporting targeted customer retention decisions.
 
-This project goes beyond building a binary classification model. It explores how a churn prediction system can be designed around the **business cost of incorrect predictions**, then translates the experimentation into a modular, reproducible ML system with preprocessing, model training, evaluation, experiment tracking, API serving, testing, and containerization.
+This project goes beyond building a binary classification model. It explores how a churn prediction system can be designed around the **business cost of a targeted customer retention campaign**, then translates the experimentation into a modular, reproducible ML system with preprocessing, model training, evaluation, experiment tracking, API serving, testing, and containerization.
 
 ---
 
@@ -37,13 +37,11 @@ This project goes beyond building a binary classification model. It explores how
 
 Customer churn is a major challenge for subscription-based businesses.
 
-When a customer leaves, the business loses the future revenue associated with that customer. A retention team therefore needs to identify customers who are likely to churn **before the customer actually leaves**, so that targeted retention actions can be taken.
+When a customer leaves, the business loses the future revenue associated with that customer. A retention team therefore needs to identify customers who are likely to churn before the customer actually leaves, so that targeted retention actions can be taken.
 
 The goal of this project is to build a system that answers:
 
 > **Which customers are most likely to churn, and how should the prediction threshold be chosen when the cost of missing a churner is different from the cost of targeting a loyal customer?**
-
-This distinction is important.
 
 A conventional classification model may optimize a metric such as accuracy or F1 score. However, for customer retention, the consequences of different types of mistakes are not necessarily equal.
 
@@ -95,26 +93,13 @@ The raw dataset required several preprocessing steps before it could be used for
 
 `customerID` was removed because it uniquely identifies customers but does not provide useful predictive information for the model.
 
-```python
-df = df.drop("customerID", axis=1)
-```
-
 Keeping arbitrary identifiers can allow a model to learn patterns that do not generalize to new customers.
 
 ### Correcting `TotalCharges`
 
 Although `TotalCharges` represents a numerical quantity, it was initially loaded as an object/string column.
 
-It was converted explicitly to numeric values:
-
-```python
-df["TotalCharges"] = pd.to_numeric(
-    df["TotalCharges"],
-    errors="coerce"
-)
-```
-
-Using `errors="coerce"` converts values that cannot be interpreted as numbers into missing values, allowing them to be handled consistently by the preprocessing pipeline.
+It was converted explicitly to numeric values. Values that cannot be interpreted as numbers are converted into missing values, allowing them to be handled consistently by the preprocessing pipeline.
 
 ---
 
@@ -145,13 +130,6 @@ The numerical preprocessing pipeline performs:
 1. Median imputation
 2. Standard scaling
 
-```python
-numerical_pipeline = Pipeline([
-    ("imputer", SimpleImputer(strategy="median")),
-    ("scaler", StandardScaler())
-])
-```
-
 ### Categorical features
 
 Categorical variables were treated as nominal features because there was no assumption of a strict ordering between their categories.
@@ -162,24 +140,17 @@ The categorical preprocessing pipeline performs:
 2. One-hot encoding
 3. Ignoring previously unseen categories during inference
 
-```python
-categorical_pipeline = Pipeline([
-    ("imputer", SimpleImputer(strategy="most_frequent")),
-    ("encoder", OneHotEncoder(handle_unknown="ignore"))
-])
-```
-
 These transformations are combined using a `ColumnTransformer`.
 
 This design ensures that the same preprocessing logic can be applied consistently during training and inference.
 
 ---
 
-# 4. Business-Aware Evaluation
+## 4. Business-Aware Evaluation
 
 One of the central design decisions in this project was to avoid relying exclusively on conventional classification metrics.
 
-### Why accuracy isn't enough
+### Accuracy isn't enough
 
 Suppose a model predicts that almost every customer will stay.
 
@@ -222,23 +193,11 @@ This allows the evaluation metric to reflect two competing business concerns:
 
 The actual implementation calculates the confusion-matrix components, applies the 6:1 false-negative/false-positive cost ratio, and adds the precision penalty when required.
 
-### Why this matters
-
-This changes the question being asked of the model.
-
-Instead of:
-
-> "How many predictions did the model get right?"
-
-the evaluation becomes:
-
-> "How expensive are the mistakes made by this model under our business assumptions?"
-
 That makes the evaluation much closer to the eventual decision-making context.
 
 ---
 
-# 5. Prediction Threshold Selection
+## 5. Prediction Threshold Selection
 
 Classification models typically use a probability threshold of 0.5 to convert predicted probabilities into classes.
 
@@ -250,7 +209,7 @@ The validation set was therefore used to examine different thresholds.
 
 For the tuned XGBoost experiment, the validation results around the selected threshold demonstrated the trade-off between precision, recall and business cost. At a threshold of 0.30, the experiment produced a validation cost of 421 with approximately 0.454 precision and 0.882 recall for the churn class.
 
-# 6. Model Selection
+## 6. Model Selection
 
 Several models were considered rather than immediately choosing a complex algorithm.
 
@@ -284,7 +243,7 @@ This made model selection consistent with the actual objective of the system.
 
 ---
 
-# Hyperparameter Tuning
+## Hyperparameter Tuning
 
 After comparing the initial models, hyperparameter optimization was performed using Optuna.
 
@@ -305,7 +264,7 @@ In other words, the hyperparameter search was explicitly optimized toward the **
 
 This produced the best set of parameters for the XGBoost model.
 
-# Productionization
+## Productionization
 
 After the initial modeling work was developed in a notebook, the project was reorganized into a modular machine learning system.
 
