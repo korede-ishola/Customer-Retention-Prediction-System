@@ -77,13 +77,13 @@ The dataset contains 5,174 non-churned customers and 1,869 churned customers, ma
 
 The raw dataset required several preprocessing steps before it could be used for machine learning.
 
-### Removing identifiers
+**Removing identifiers**
 
 `customerID` was removed because it uniquely identifies customers but does not provide useful predictive information for the model.
 
 Keeping arbitrary identifiers can allow a model to learn patterns that do not generalize to new customers.
 
-### Correcting `TotalCharges`
+**Correcting `TotalCharges`**
 
 Although `TotalCharges` represents a numerical quantity, it was initially loaded as an object/string column.
 
