@@ -167,17 +167,13 @@ This allows the evaluation metric to reflect two competing business concerns:
 
 The actual implementation calculates the confusion-matrix components, applies the 6:1 false-negative/false-positive cost ratio, and adds the precision penalty when required.
 
-That makes the evaluation much closer to the eventual decision-making context.
+That made the evaluation much closer to the eventual decision-making context.
 
 ## 5. Prediction Threshold Selection
 
 Classification models typically use a probability threshold of 0.5 to convert predicted probabilities into classes.
 
-For a retention system however, 0.5 may not automatically be the optimal threshold.
-
-A lower threshold can identify more potential churners, increasing recall, but it also increases the number of customers incorrectly flagged.
-
-The validation set was therefore used to examine different thresholds.
+For a retention system however, 0.5 may not automatically be the optimal threshold. A lower threshold can identify more potential churners, increasing recall, but it also increases the number of customers incorrectly flagged. The validation set was therefore used to examine different thresholds.
 
 For the tuned XGBoost experiment, the validation results around the selected threshold demonstrated the trade-off between precision, recall and business cost. At a threshold of 0.30, the experiment produced a validation cost of 421 with approximately 0.454 precision and 0.882 recall for the churn class.
 
@@ -189,7 +185,7 @@ Several models were considered rather than immediately choosing a complex algori
 
 Logistic Regression was used as the baseline model.
 
-This establishes a simple reference point against which more complex models can be evaluated.
+This established a simple reference point against which more complex models can be evaluated.
 
 **Random Forest**
 
@@ -207,15 +203,11 @@ The initial LightGBM experiment produced a lower validation cost than both the L
 
 XGBoost was also evaluated and subsequently tuned.
 
-The initial XGBoost model used `scale_pos_weight` to account for the imbalance between churned and non-churned customers.
-
-The final model-selection process considered not only conventional classification metrics but, importantly, the custom business cost.
-
-This made model selection consistent with the actual objective of the system.
+The XGBoost model used `scale_pos_weight` to account for the imbalance between churned and non-churned customers.
 
 ## Hyperparameter Tuning
 
-After comparing the initial models, hyperparameter optimization was performed using Optuna.
+After comparing the initial models, hyperparameter optimization was performed using Optuna for XGBoost and LightGBM.
 
 For XGBoost, parameters explored were:
 
@@ -229,10 +221,11 @@ For XGBoost, parameters explored were:
 * `reg_alpha`
 * `reg_lambda`
 
-The objective function trained an XGBoost model, generated churn probabilities, converted them into predictions using the selected threshold, and returned the custom `business_cost`. 
-In other words, the hyperparameter search was explicitly optimized toward the business objective, rather than generic accuracy.
+The objective function trained an XGBoost model, generated churn probabilities, converted them into predictions using the selected threshold, and returned the custom `business_cost`. In other words, the hyperparameter search was explicitly optimized toward the business objective. This made model selection consistent with the actual objective of the system.
 
-This produced the best set of parameters for the XGBoost model.
+After tuning, the XGBoost model produced a lower cost than LightGBM.  This made XGBoost the final model choice.
+
+The final model-selection process also considered conventional classification metrics; precision and recall.
 
 ## Productionization
 
