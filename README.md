@@ -261,7 +261,7 @@ This makes the system easier to maintain and, more importantly, reduces the risk
 
 The notebook served as the experimentation and reasoning layer, while the modularized source code contains the reusable implementation.
 
-# Project Structure
+## Project Structure
 
 ```text
 Customer-Retention-Prediction-System/
