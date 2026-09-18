@@ -33,10 +33,6 @@ Customer churn is a major challenge for subscription-based businesses.
 
 When a customer leaves, the business loses the future revenue associated with that customer. A retention team therefore needs to identify customers who are likely to churn before the customer actually leaves, so that targeted retention actions can be taken.
 
-The goal of this project is to build a system that answers:
-
-> Which customers are most likely to churn, and how should the prediction threshold be chosen when the cost of missing a churner is different from the cost of targeting a loyal customer?
-
 A conventional classification model may optimize a metric such as accuracy or F1 score. However, for customer retention, the consequences of different types of mistakes are not necessarily equal.
 
 * **False Negative:** A customer who eventually churns is predicted as loyal.
