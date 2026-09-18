@@ -91,7 +91,7 @@ During experimentation, the dataset was split into training, validation, and tes
 
 The training set was used to train the model, the validation set was used for model comparison, threshold selection, and hyperparameter tuning, while the test set was kept for final evaluation.
 
-During the final training, the dataset was split into training and test sets. The training set used to train the model, while the test set was used to evaluate it.
+During the final training, the dataset was split into training and test sets. The training set was used to train the model, while the test set was used to evaluate it.
 
 ## 3. Data Preprocessing
 
@@ -201,6 +201,8 @@ XGBoost was also evaluated and subsequently tuned.
 
 The XGBoost model used `scale_pos_weight` to account for the imbalance between churned and non-churned customers.
 
+The final model-selection process considered conventional classification metrics; precision and recall, as well as the custom business cost.
+
 ## Hyperparameter Tuning
 
 After comparing the initial models, hyperparameter optimization was performed using Optuna for XGBoost and LightGBM.
@@ -220,8 +222,6 @@ For XGBoost, parameters explored were:
 The objective function trained an XGBoost model, generated churn probabilities, converted them into predictions using the selected threshold, and returned the custom `business_cost`. In other words, the hyperparameter search was explicitly optimized toward the business objective. This made model selection consistent with the actual objective of the system.
 
 After tuning, the XGBoost model produced a lower cost than LightGBM.  This made XGBoost the final model choice.
-
-The final model-selection process also considered conventional classification metrics; precision and recall.
 
 ## Productionization
 
